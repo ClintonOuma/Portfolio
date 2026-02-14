@@ -23,24 +23,24 @@ function SkillTooltip({ active, payload }: { active?: boolean; payload?: Array<{
     const skill = payload[0].payload;
 
     return (
-        <div className="rounded-xl px-4 py-3 bg-[#0d0d1a]/90 backdrop-blur-lg border border-white/10 shadow-xl max-w-[220px]">
-            <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-semibold text-foreground/90">{skill.name}</span>
+        <div className="rounded-xl px-5 py-4 bg-[#0d0d1a]/95 backdrop-blur-lg border border-white/10 shadow-xl max-w-[280px]">
+            <div className="flex items-center gap-2.5 mb-2">
+                <span className="text-base font-semibold text-foreground/90">{skill.name}</span>
                 {skill.mastering && (
-                    <span className="text-[10px] font-medium text-violet-400 bg-violet-500/10 px-1.5 py-0.5 rounded-full border border-violet-500/20">
+                    <span className="text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full border border-violet-500/20">
                         Mastering
                     </span>
                 )}
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">{skill.description}</p>
-            <div className="mt-2 flex items-center gap-2">
-                <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+            <p className="text-sm text-muted-foreground leading-relaxed">{skill.description}</p>
+            <div className="mt-3 flex items-center gap-3">
+                <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
+                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 transition-all duration-300"
                         style={{ width: `${skill.level}%` }}
                     />
                 </div>
-                <span className="text-[10px] font-mono text-muted-foreground">{skill.level}%</span>
+                <span className="text-sm font-mono font-medium text-muted-foreground min-w-[2.5rem]">{skill.level}%</span>
             </div>
         </div>
     );
@@ -68,16 +68,17 @@ function CustomTick({
         <g transform={`translate(${x},${y})`}>
             <text
                 textAnchor="middle"
-                dy={4}
+                dy={6}
+                style={{ fontSize: 15 }}
                 className={cn(
-                    'fill-muted-foreground text-xs font-medium',
+                    'fill-muted-foreground font-semibold',
                     showMastering && isMastering && 'fill-violet-400'
                 )}
             >
                 {payload?.value}
             </text>
             {showMastering && isMastering && (
-                <circle cy={-10} r={3} className="fill-violet-400 animate-pulse" />
+                <circle cy={-12} r={4} className="fill-violet-400 animate-pulse" />
             )}
         </g>
     );
@@ -92,7 +93,7 @@ export function SkillsRadar() {
 
     return (
         <section id="stack" className="relative py-24 px-4">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-10">
                     <span className="text-xs font-medium text-primary uppercase tracking-wider">Expertise</span>
@@ -107,14 +108,14 @@ export function SkillsRadar() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative rounded-2xl p-6 sm:p-8 bg-white/5 backdrop-blur-md border border-white/10 shadow-lg"
+                    className="relative rounded-2xl p-8 sm:p-10 bg-white/5 backdrop-blur-md border border-white/10 shadow-lg"
                 >
                     {/* Toggle */}
-                    <div className="flex justify-end mb-4">
+                    <div className="flex justify-end mb-5">
                         <button
                             onClick={() => setShowMastering((prev) => !prev)}
                             className={cn(
-                                'group flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
+                                'group flex items-center gap-2.5 px-4 py-2 rounded-full text-sm font-medium transition-all border',
                                 showMastering
                                     ? 'bg-violet-500/15 border-violet-500/30 text-violet-300'
                                     : 'bg-white/5 border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/10'
@@ -122,7 +123,7 @@ export function SkillsRadar() {
                         >
                             <Sparkles
                                 className={cn(
-                                    'w-3.5 h-3.5 transition-colors',
+                                    'w-4 h-4 transition-colors',
                                     showMastering ? 'text-violet-400' : 'text-muted-foreground group-hover:text-foreground'
                                 )}
                             />
@@ -131,8 +132,8 @@ export function SkillsRadar() {
                     </div>
 
                     {/* Chart */}
-                    <ResponsiveContainer width="100%" height={320}>
-                        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILLS}>
+                    <ResponsiveContainer width="100%" height={420}>
+                        <RadarChart cx="50%" cy="50%" outerRadius="75%" data={SKILLS}>
                             <PolarGrid stroke="rgba(255,255,255,0.06)" />
                             <PolarAngleAxis
                                 dataKey="name"
@@ -145,8 +146,8 @@ export function SkillsRadar() {
                                 dataKey="level"
                                 stroke="url(#radarGlow)"
                                 fill="url(#radarFill)"
-                                strokeWidth={2}
-                                dot={{ r: 4, fill: '#a78bfa', stroke: '#7c3aed', strokeWidth: 1 }}
+                                strokeWidth={2.5}
+                                dot={{ r: 5, fill: '#a78bfa', stroke: '#7c3aed', strokeWidth: 1.5 }}
                             />
                             <Tooltip
                                 content={<SkillTooltip />}
@@ -179,11 +180,11 @@ export function SkillsRadar() {
                                 {SKILLS.filter((s) => s.mastering).map((skill) => (
                                     <span
                                         key={skill.name}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs font-medium text-violet-300"
+                                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-sm font-medium text-violet-300"
                                     >
-                                        <span className="relative flex h-1.5 w-1.5">
+                                        <span className="relative flex h-2 w-2">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-                                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
+                                            <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-500" />
                                         </span>
                                         {skill.name}
                                     </span>
