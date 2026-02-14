@@ -10,7 +10,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from '@/components/ui/dialog';
-import { Cpu, HelpCircle, Lightbulb } from 'lucide-react';
+import { Cpu, HelpCircle, Lightbulb, BookOpen, ExternalLink, GitFork, FileText } from 'lucide-react';
 
 export function ProjectGrid() {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -37,6 +37,27 @@ export function ProjectGrid() {
                             project={project}
                             onClick={() => setSelectedProject(project)}
                         />
+                    ))}
+                </div>
+
+                {/* Standout Features — Coming Soon */}
+                <div className="mt-12 p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-wrap items-center justify-center gap-6 md:gap-10">
+                    {[
+                        { icon: BookOpen, label: 'Case Studies', desc: 'Deep dives coming soon' },
+                        { icon: ExternalLink, label: 'Live Demos', desc: 'Try projects yourself' },
+                        { icon: FileText, label: 'Technical Blog', desc: 'Architecture & insights' },
+                        { icon: GitFork, label: 'Open Source', desc: 'Contributions & repos' },
+                    ].map((item) => (
+                        <div
+                            key={item.label}
+                            className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors"
+                        >
+                            <item.icon className="w-4 h-4 text-primary/70" />
+                            <div>
+                                <p className="text-sm font-medium text-foreground/90">{item.label}</p>
+                                <p className="text-xs text-muted-foreground">{item.desc}</p>
+                            </div>
+                        </div>
                     ))}
                 </div>
 

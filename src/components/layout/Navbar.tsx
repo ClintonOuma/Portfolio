@@ -37,14 +37,16 @@ export function Navbar() {
                     }
                 });
                 /* Pick section with highest visibility (most in view) */
-                let best: { id: string; ratio: number } | null = null;
+                let bestId: string | null = null;
+                let bestRatio = 0;
                 intersectingRef.current.forEach((ratio, el) => {
                     const id = (el as HTMLElement).id;
-                    if (id && (!best || ratio > best.ratio)) {
-                        best = { id, ratio };
+                    if (id && ratio > bestRatio) {
+                        bestRatio = ratio;
+                        bestId = id;
                     }
                 });
-                if (best) setActiveSection(best.id);
+                if (bestId) setActiveSection(bestId);
             },
             { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: `-${NAVBAR_HEIGHT}px 0px -20% 0px` }
         );
@@ -190,7 +192,7 @@ export function Navbar() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute top-20 left-4 right-4 p-4 rounded-2xl glass border border-white/10 md:hidden flex flex-col gap-4"
+                        className="absolute top-20 left-4 right-4 p-4 rounded-2xl md:hidden flex flex-col gap-4 bg-[#0a0a14]/98 backdrop-blur-xl border-2 border-white/20 shadow-2xl shadow-black/50"
                     >
                         {NAV_LINKS.map((link) => (
                             <Link

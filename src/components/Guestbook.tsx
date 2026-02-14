@@ -38,7 +38,10 @@ function GuestbookForm() {
                 <input
                     name="email"
                     type="email"
-                    placeholder="Email (optional)"
+                    required
+                    placeholder="Your email *"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                    title="Please enter a valid email (e.g. name@example.com)"
                     className={cn(
                         'w-full px-4 py-2.5 rounded-xl text-sm',
                         'bg-white/5 border border-white/10 text-foreground placeholder:text-muted-foreground/60',
@@ -121,12 +124,17 @@ export function Guestbook({ entries }: { entries: GuestbookEntry[] }) {
 
             <GuestbookForm />
 
-            {entries.length > 0 && (
+            {entries.length > 0 ? (
                 <div className="space-y-3 mt-6">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recent entries</p>
                     {entries.map((entry) => (
                         <EntryCard key={entry.id} entry={entry} />
                     ))}
+                </div>
+            ) : (
+                <div className="mt-6 p-6 rounded-xl bg-white/[0.03] border border-dashed border-white/10 text-center">
+                    <p className="text-sm text-muted-foreground">No entries yet. Be the first to leave a message!</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">Your kind words brighten the day.</p>
                 </div>
             )}
         </div>

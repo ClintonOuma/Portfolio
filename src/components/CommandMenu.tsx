@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Command } from 'cmdk';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,11 +16,10 @@ import {
     Laptop,
     Lightbulb,
     X,
-    Command as CommandIcon,
+    ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { SKILLS } from '@/data/skills';
-import { SITE_METADATA } from '@/lib/constants';
+import { getSearchIndex } from '@/lib/searchIndex';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 /* ------------------------------------------------------------------ */
@@ -79,6 +78,39 @@ export function CommandMenu({
         [setOpen],
     );
 
+    const searchIndex = useMemo(() => getSearchIndex(), []);
+
+    const getIconForItem = (item: (typeof searchIndex)[0]): React.ElementType => {
+        if (item.type === 'nav') {
+            const map: Record<string, React.ElementType> = {
+                Home: LayoutDashboard,
+                Projects: Code2,
+                'Tech Stack': Laptop,
+                Experience: Briefcase,
+                Contact: Mail,
+            };
+            return map[item.label] || LayoutDashboard;
+        }
+        if (item.type === 'project') return Code2;
+        if (item.type === 'experience') return Briefcase;
+        if (item.type === 'skill') return Lightbulb;
+        if (item.type === 'contact') return item.label.includes('GitHub') ? Github : item.label.includes('Twitter') ? Twitter : Copy;
+        return Search;
+    };
+
+    const handleSearchItemSelect = useCallback(
+        (item: (typeof searchIndex)[0]) => {
+            if (item.href) {
+                runCommand(() => router.push(item.href!));
+            } else if (item.action === 'copy' && item.actionPayload) {
+                copyToClipboard(item.actionPayload, item.label);
+            } else if (item.action === 'external' && item.actionPayload) {
+                runCommand(() => window.open(item.actionPayload!, '_blank'));
+            }
+        },
+        [runCommand, copyToClipboard, router]
+    );
+
     /* ---- Shared command list content ---- */
     const commandContent = (
         <>
@@ -86,7 +118,7 @@ export function CommandMenu({
             <div className="flex items-center border-b border-white/10 px-4">
                 <Search className="w-5 h-5 text-muted-foreground mr-3 shrink-0" />
                 <Command.Input
-                    placeholder="Type a command or search..."
+                    placeholder="Search projects, skills, experience, contact..."
                     className="flex-1 h-14 bg-transparent text-foreground placeholder:text-muted-foreground/60 outline-none text-sm md:text-base"
                 />
                 {/* Mobile close button */}
@@ -100,78 +132,36 @@ export function CommandMenu({
                 )}
             </div>
 
-            {/* Results List */}
+            {/* Results List — portfolio-wide search */}
             <Command.List className="max-h-[50vh] md:max-h-[60vh] overflow-y-auto overflow-x-hidden p-2 scrollbar-thin scrollbar-thumb-white/10">
                 <Command.Empty className="py-6 text-center text-sm text-muted-foreground">
-                    No results found.
+                    No results found. Try &quot;projects&quot;, &quot;typescript&quot;, &quot;experience&quot;, or &quot;contact&quot;.
                 </Command.Empty>
 
-                {/* Navigation Group */}
-                <Command.Group heading="Navigation" className="text-xs text-muted-foreground font-medium mb-2 px-2">
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('/'))}
-                        icon={LayoutDashboard}
-                        label="Home"
-                    />
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('#projects'))}
-                        icon={Code2}
-                        label="Projects"
-                    />
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('#stack'))}
-                        icon={Laptop}
-                        label="Tech Stack"
-                    />
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('#experience'))}
-                        icon={Briefcase}
-                        label="Experience"
-                    />
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('#contact'))}
-                        icon={Mail}
-                        label="Contact"
-                    />
-                </Command.Group>
-
-                <div className="h-px bg-white/5 my-2 mx-2" />
-
-                {/* Skills Group (Dynamic) */}
-                <Command.Group heading="Skills" className="text-xs text-muted-foreground font-medium mb-2 px-2">
-                    {SKILLS.map(skill => (
-                        <CommandItem
-                            key={skill.name}
-                            value={skill.name}
-                            onSelect={() => runCommand(() => router.push('#stack'))}
-                            icon={skill.mastering ? Lightbulb : Code2}
-                            label={skill.name}
-                            shortcut={skill.level + '%'}
-                        />
-                    ))}
-                </Command.Group>
-
-                <div className="h-px bg-white/5 my-2 mx-2" />
-
-                {/* Socials Group */}
-                <Command.Group heading="Socials" className="text-xs text-muted-foreground font-medium mb-2 px-2">
-                    <CommandItem
-                        onSelect={() => runCommand(() => window.open(SITE_METADATA.github, '_blank'))}
-                        icon={Github}
-                        label="GitHub"
-                    />
-                    <CommandItem
-                        onSelect={() => runCommand(() => window.open(SITE_METADATA.twitter, '_blank'))}
-                        icon={Twitter}
-                        label="X / Twitter"
-                    />
-                    <CommandItem
-                        onSelect={() => copyToClipboard('clichyb80@gmail.com', 'Email')}
-                        icon={Copy}
-                        label="Copy Email"
-                        shortcut="↵"
-                    />
-                </Command.Group>
+                {searchIndex.map((item) => {
+                    const Icon = getIconForItem(item);
+                    return (
+                        <Command.Item
+                            key={item.id}
+                            value={`${item.label} ${item.subtitle || ''} ${item.keywords}`}
+                            onSelect={() => handleSearchItemSelect(item)}
+                            className="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground/80 aria-selected:bg-primary/20 aria-selected:text-primary cursor-pointer transition-colors"
+                        >
+                            <div className="flex items-center justify-center w-5 h-5 rounded bg-white/5 border border-white/5 group-aria-selected:border-primary/20 group-aria-selected:bg-primary/10 transition-colors shrink-0">
+                                <Icon className="w-3 h-3 text-muted-foreground group-aria-selected:text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <span className="block truncate">{item.label}</span>
+                                {item.subtitle && (
+                                    <span className="block text-xs text-muted-foreground truncate">{item.subtitle}</span>
+                                )}
+                            </div>
+                            {(item.action === 'external' || item.href) && (
+                                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
+                            )}
+                        </Command.Item>
+                    );
+                })}
             </Command.List>
 
             {/* Footer — desktop only */}
@@ -249,43 +239,5 @@ export function CommandMenu({
                 </>
             )}
         </AnimatePresence>
-    );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
-
-function CommandItem({
-    icon: Icon,
-    label,
-    shortcut,
-    onSelect,
-    value,
-}: {
-    icon: React.ElementType;
-    label: string;
-    shortcut?: string;
-    onSelect: () => void;
-    value?: string;
-}) {
-    return (
-        <Command.Item
-            value={value || label}
-            onSelect={onSelect}
-            className="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground/80 aria-selected:bg-primary/20 aria-selected:text-primary cursor-pointer transition-colors"
-        >
-            <div className="flex items-center justify-center w-5 h-5 rounded bg-white/5 border border-white/5 group-aria-selected:border-primary/20 group-aria-selected:bg-primary/10 transition-colors">
-                <Icon className="w-3 h-3 text-muted-foreground group-aria-selected:text-primary" />
-            </div>
-
-            <span className="flex-1">{label}</span>
-
-            {shortcut && (
-                <span className="text-xs text-muted-foreground opacity-50 group-aria-selected:opacity-100">
-                    {shortcut}
-                </span>
-            )}
-        </Command.Item>
     );
 }
