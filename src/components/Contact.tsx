@@ -154,7 +154,7 @@ function ContactInfo() {
 
 export function ContactSection({ entries }: { entries: GuestbookEntry[] }) {
     return (
-        <section id="contact" className="relative py-24 px-4">
+        <section id="contact" className="relative py-28 px-4" aria-label="Contact">
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16">

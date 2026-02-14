@@ -16,16 +16,16 @@ export function ProjectGrid() {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
     return (
-        <section id="incubator" className="relative py-24 px-4 bg-black/20">
+        <section id="projects" className="relative py-28 px-4 bg-black/20" aria-label="Projects">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <span className="text-xs font-medium text-primary uppercase tracking-wider">Lab</span>
+                    <span className="text-xs font-medium text-primary uppercase tracking-wider">Projects · Lab</span>
                     <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground/90 tracking-tight">
                         Project Incubator
                     </h2>
                     <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-                        Experimental ideas and active developments.
+                        Experimental ideas and active developments — case studies and demos coming soon.
                     </p>
                 </div>
 

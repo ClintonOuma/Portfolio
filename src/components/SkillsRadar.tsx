@@ -92,7 +92,7 @@ export function SkillsRadar() {
     const [showMastering, setShowMastering] = useState(false);
 
     return (
-        <section id="stack" className="relative py-24 px-4">
+        <section id="stack" className="relative py-28 px-4" aria-label="Stack">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-10">
