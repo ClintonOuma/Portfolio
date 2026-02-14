@@ -1,0 +1,69 @@
+% Clinton Ouma — ATS-Friendly CV (LaTeX)
+% Compile with pdflatex or xelatex for a professional PDF.
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+\geometry{margin=1in}
+\setlist{nosep,leftmargin=1.2em}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=black}
+
+\newcommand{\name}[1]{\begin{center}\LARGE\bfseries #1\end{center}}
+\newcommand{\contact}[1]{\begin{center}\normalsize #1\end{center}\vspace{0.3em}}
+
+\begin{document}
+
+\name{Clinton Ouma}
+\contact{Kenya \quad $|$ \quad \href{mailto:clichyb80@gmail.com}{clichyb80@gmail.com} \quad $|$ \quad GitHub: ClintonOuma \quad $|$ \quad X: @abclichy}
+
+\vspace{0.5em}
+
+\section*{Professional Summary}
+Full-Stack Engineer and CS graduate who builds fluid, database-driven web applications with the modern React ecosystem. I ship production-ready UIs with Next.js and TypeScript, integrate real-time backends with Supabase (PostgreSQL), and deliver smooth, accessible experiences using Tailwind CSS and Framer Motion. I focus on clean architecture, performance, and maintainable code.
+
+\section*{Key Projects}
+
+\textbf{Full-Stack Portfolio}
+\begin{itemize}
+  \item \textbf{Stack:} Next.js 15, TypeScript, Tailwind CSS, Supabase (PostgreSQL), Framer Motion.
+  \item \textbf{Supabase Guestbook:} Server Actions and real-time guestbook with PostgreSQL; form validation and rate limiting.
+  \item \textbf{CMD+K Command Palette:} Global search and navigation for sections, projects, and quick actions; built with cmdk.
+  \item \textbf{Interactive Motion:} Framer Motion for smooth page transitions, scroll-linked progress, and timeline animations; respects reduced motion.
+\end{itemize}
+
+\section*{Technical Skills}
+
+\textbf{Frontend:} Next.js 15, React, TypeScript, Tailwind CSS, Framer Motion, Responsive \& Accessibility\\
+\textbf{Backend:} Supabase (PostgreSQL), Server Actions, RESTful APIs, Node.js\\
+\textbf{Tools:} Git, SSH, Linux / Parrot OS
+
+\section*{Experience}
+
+\textbf{Full-Stack Developer} \hfill Independent\\
+\textit{2025 -- Present}\\
+Building production-ready web applications and a high-performance portfolio with Next.js 16, TypeScript, Supabase, and modern tooling. Focus on performance, accessibility, and clean architecture.
+
+\vspace{0.4em}
+\textbf{Full-Stack Development \& Real-World Projects} \hfill Self-Directed\\
+\textit{2023 -- 2025}\\
+Shipped full-stack applications end-to-end; React ecosystem, App Router, Server Actions, RESTful APIs, and responsive UI. Projects in authentication, real-time features, and data visualization.
+
+\section*{Education}
+
+\textbf{Bachelor of Science in Computer Science} \hfill Maasai Mara University\\
+\textit{2022 -- 2025}\\
+Core focus on algorithms, data structures, software engineering, and object-oriented design. Strong foundations in problem-solving and systems thinking.
+
+\vspace{1em}
+\hrule
+\small References and project links available on request.
+
+\end{document}
