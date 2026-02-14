@@ -1,6 +1,7 @@
 'use client';
 
-import { Mail, Github, Phone, ArrowUpRight, Copy, Check, Facebook, Twitter } from 'lucide-react';
+import { Mail, Github, Phone, ArrowUpRight, Copy, Check, Facebook } from 'lucide-react';
+import { XLogo } from '@/components/icons/XLogo';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -37,10 +38,10 @@ const CONTACT_LINKS = [
         copyable: false,
     },
     {
-        label: 'X / Twitter',
+        label: 'X',
         value: '@abclichy',
         href: 'https://x.com/abclichy',
-        icon: Twitter,
+        icon: XLogo,
         color: 'group-hover:text-sky-400',
         copyable: false,
     },

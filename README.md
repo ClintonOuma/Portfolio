@@ -329,7 +329,7 @@ This project is open source and available under the [MIT License](LICENSE).
 **Clinton Ouma**
 
 - GitHub: [@ClintonOuma](https://github.com/ClintonOuma)
-- Twitter: [@abclichy](https://x.com/abclichy)
+- X: [@abclichy](https://x.com/abclichy)
 - Email: clichyb80@gmail.com
 
 ---

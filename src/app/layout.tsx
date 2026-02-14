@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     description: "Building the future of the web with Next.js and Supabase.",
     siteName: "Clinton Ouma Portfolio",
   },
+  /* X (formerly Twitter) Card meta - platform still uses twitter: schema for embeds */
   twitter: {
     card: "summary_large_image",
     title: "Clinton Ouma | Full-Stack Engineer",

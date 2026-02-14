@@ -1,4 +1,5 @@
-import { Github, Twitter, Mail } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
+import { XLogo } from '@/components/icons/XLogo';
 import { SITE_METADATA } from '@/lib/constants';
 
 export function Footer() {
@@ -23,13 +24,13 @@ export function Footer() {
                             <Github className="w-4 h-4" />
                         </a>
                         <a
-                            href={SITE_METADATA.twitter}
+                            href={SITE_METADATA.x}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-primary transition-colors"
-                            aria-label="X / Twitter"
+                            aria-label="X"
                         >
-                            <Twitter className="w-4 h-4" />
+                            <XLogo className="w-4 h-4" />
                         </a>
                         <a
                             href="mailto:clichyb80@gmail.com"

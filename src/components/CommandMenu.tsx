@@ -10,7 +10,6 @@ import {
     Briefcase,
     Mail,
     Github,
-    Twitter,
     Copy,
     Search,
     Laptop,
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSearchIndex } from '@/lib/searchIndex';
+import { XLogo } from '@/components/icons/XLogo';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 /* ------------------------------------------------------------------ */
@@ -94,7 +94,7 @@ export function CommandMenu({
         if (item.type === 'project') return Code2;
         if (item.type === 'experience') return Briefcase;
         if (item.type === 'skill') return Lightbulb;
-        if (item.type === 'contact') return item.label.includes('GitHub') ? Github : item.label.includes('Twitter') ? Twitter : Copy;
+        if (item.type === 'contact') return item.label.includes('GitHub') ? Github : item.label === 'X' ? XLogo : Copy;
         return Search;
     };
 

@@ -111,12 +111,12 @@ export function getSearchIndex(): SearchItem[] {
         actionPayload: SITE_METADATA.github,
     });
     items.push({
-        id: 'contact-twitter',
+        id: 'contact-x',
         type: 'contact',
-        label: 'X / Twitter',
-        keywords: 'twitter x abclichy social',
+        label: 'X',
+        keywords: 'x twitter abclichy social',
         action: 'external',
-        actionPayload: SITE_METADATA.twitter,
+        actionPayload: SITE_METADATA.x,
     });
 
     return items;
