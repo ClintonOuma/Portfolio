@@ -12,6 +12,7 @@ export function Navbar() {
     const [isOpen, setIsOpen] = useState(false); // Mobile Menu
     const [showCmd, setShowCmd] = useState(false); // Command Palette
     const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -19,6 +20,24 @@ export function Navbar() {
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            { threshold: 0.5, rootMargin: '-80px 0px 0px 0px' }
+        );
+
+        const sections = document.querySelectorAll('section[id]');
+        sections.forEach((section) => observer.observe(section));
+
+        return () => sections.forEach((section) => observer.unobserve(section));
     }, []);
 
     return (
@@ -40,7 +59,11 @@ export function Navbar() {
                     className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"
                 >
                     {/* Logo / Home */}
-                    <Link href="/" className="text-sm font-semibold tracking-tight text-foreground/90 hover:text-foreground transition-colors">
+                    <Link
+                        href="/"
+                        className="text-sm font-semibold tracking-tight text-foreground/90 hover:text-foreground transition-colors"
+                        onClick={() => window.scrollTo(0, 0)}
+                    >
                         Portfolio
                     </Link>
 
@@ -50,9 +73,23 @@ export function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                className={cn(
+                                    "text-sm font-medium transition-colors relative",
+                                    activeSection === link.href.substring(1)
+                                        ? "text-primary"
+                                        : "text-muted-foreground hover:text-primary"
+                                )}
                             >
                                 {link.name}
+                                {activeSection === link.href.substring(1) && (
+                                    <motion.div
+                                        layoutId="activeNav"
+                                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                    />
+                                )}
                             </Link>
                         ))}
                     </div>
