@@ -4,13 +4,22 @@ import { CommandMenu } from '@/components/CommandMenu';
 import { motion } from 'framer-motion';
 import { Command, Menu, Search, X } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS } from '@/lib/constants';
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false); // Mobile Menu
     const [showCmd, setShowCmd] = useState(false); // Command Palette
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <>
@@ -20,7 +29,12 @@ export function Navbar() {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="fixed top-0 left-0 right-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-md"
+                className={cn(
+                    "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
+                    scrolled
+                        ? "bg-black/80 border-b border-white/10 backdrop-blur-lg py-1"
+                        : "bg-black/50 border-b border-transparent backdrop-blur-md py-2"
+                )}
             >
                 <nav
                     className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"
