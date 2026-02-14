@@ -14,15 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Full-Stack Engineer",
-  description: "A premium portfolio for a Full-Stack Engineer specializing in Next.js, TypeScript, and modern web development.",
+  title: "Clinton Ouma | Full-Stack Engineer",
+  description: "Clinton Ouma is a Full-Stack Engineer specializing in Next.js, TypeScript, and Supabase. Building premium, high-performance web applications with modern design principles.",
+  keywords: ["Clinton Ouma", "Full-Stack Developer", "Next.js", "TypeScript", "Supabase", "Portfolio", "Web Development", "Nairobi"],
+  authors: [{ name: "Clinton Ouma" }],
+  creator: "Clinton Ouma",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://portfolio.com",
-    title: "Portfolio | Full-Stack Engineer",
-    description: "Building the future of the web with JavaScript.",
-    siteName: "Portfolio",
+    url: "https://portfolio.com", // Replace with actual URL if known
+    title: "Clinton Ouma | Full-Stack Engineer",
+    description: "Building the future of the web with Next.js and Supabase.",
+    siteName: "Clinton Ouma Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Clinton Ouma | Full-Stack Engineer",
+    description: "Building the future of the web with Next.js and Supabase.",
+    creator: "@abclichy",
   },
 };
 
