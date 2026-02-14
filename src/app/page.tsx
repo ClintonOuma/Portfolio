@@ -22,8 +22,7 @@ async function ContactWrapper() {
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-background text-foreground pt-20">
-      <Navbar />
+    <main className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
       <Hero />
       <Suspense fallback={
         <div className="py-24 text-center text-muted-foreground">

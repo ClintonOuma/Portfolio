@@ -49,10 +49,10 @@ export function Navbar() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
-                    "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
+                    "fixed top-0 left-0 right-0 z-[100] w-full backdrop-blur-md transition-all duration-300 ease-out",
                     scrolled
-                        ? "bg-black/80 border-b border-white/10 backdrop-blur-lg py-1"
-                        : "bg-black/50 border-b border-transparent backdrop-blur-md py-2"
+                        ? "bg-black/70 border-b border-white/15 backdrop-blur-xl py-2 shadow-lg shadow-black/20"
+                        : "bg-black/40 border-b border-transparent py-3"
                 )}
             >
                 <nav
