@@ -190,7 +190,11 @@ DATABASE_URL=postgresql://postgres:your_password@your_supabase_host:5432/postgre
 6. Navigate to **Settings → Database**
 7. Copy the **Connection String (URI)** → use as `DATABASE_URL`
 
-### 4. Database Setup
+### 4. Resume (optional)
+
+Place your resume PDF in the `public` folder as `resume.pdf`. The "Download CV" / "CV" links in the navbar and hero will then work. If the file is missing, the link will 404 until you add it.
+
+### 5. Database Setup
 
 Run the following SQL in your Supabase SQL Editor to create the guestbook table:
 
@@ -217,7 +221,7 @@ CREATE POLICY "Allow public insert access"
   WITH CHECK (true);
 ```
 
-### 5. Run Development Server
+### 6. Run Development Server
 
 ```bash
 npm run dev
@@ -231,7 +235,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-### 6. Build for Production
+### 7. Build for Production
 
 ```bash
 npm run build

@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import type { GuestbookEntry } from "@/types/guestbook";
 
 import { Experience } from "@/components/Experience";
+import { Testimonials } from "@/components/Testimonials";
 
 async function ContactWrapper() {
   const { data: entries } = await supabase
@@ -34,6 +35,7 @@ export default function Home() {
       <SkillsRadar />
       <ProjectGrid />
       <Experience />
+      <Testimonials />
       <Suspense fallback={
         <div className="py-24 text-center text-muted-foreground">
           <div className="animate-pulse">Loading contact...</div>

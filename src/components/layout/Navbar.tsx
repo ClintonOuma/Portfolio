@@ -1,21 +1,22 @@
 'use client';
 
 import { CommandMenu } from '@/components/CommandMenu';
-import { motion, animate } from 'framer-motion';
-import { Command, Menu, Search, X } from 'lucide-react';
+import { motion, animate, useReducedMotion } from 'framer-motion';
+import { Command, Menu, Search, X, FileDown } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { NAV_LINKS } from '@/lib/constants';
+import { NAV_LINKS, RESUME_URL } from '@/lib/constants';
 
 const NAVBAR_HEIGHT = 80;
 
 export function Navbar() {
-    const [isOpen, setIsOpen] = useState(false); // Mobile Menu
-    const [showCmd, setShowCmd] = useState(false); // Command Palette
+    const [isOpen, setIsOpen] = useState(false);
+    const [showCmd, setShowCmd] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('');
     const intersectingRef = useRef<Map<Element, number>>(new Map());
+    const reducedMotion = useReducedMotion();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -81,9 +82,9 @@ export function Navbar() {
             <CommandMenu open={showCmd} setOpen={setShowCmd} />
 
             <motion.header
-                initial={{ y: -100, opacity: 0 }}
+                initial={reducedMotion ? false : { y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={reducedMotion ? { duration: 0 } : { duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
                     "fixed top-0 left-0 right-0 z-[100] w-full backdrop-blur-md transition-all duration-300 ease-out",
                     scrolled
@@ -150,6 +151,15 @@ export function Navbar() {
                                 </Link>
                             );
                         })}
+                        <a
+                            href={RESUME_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary/15 text-primary border border-primary/30 hover:bg-primary/25 transition-colors"
+                        >
+                            <FileDown className="w-3.5 h-3.5" />
+                            CV
+                        </a>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -212,6 +222,15 @@ export function Navbar() {
                                 {link.name}
                             </Link>
                         ))}
+                        <a
+                            href={RESUME_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-4 py-2 text-sm font-medium rounded-lg bg-primary/15 text-primary border border-primary/30 hover:bg-primary/25"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Download CV
+                        </a>
                     </motion.div>
                 )}
             </motion.header>

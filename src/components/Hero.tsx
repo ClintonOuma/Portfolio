@@ -1,11 +1,12 @@
 'use client';
 
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { ArrowRight, Github } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Github, FileDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, MouseEvent } from 'react';
 import { LiveBadge } from '@/components/shared/LiveBadge';
 import { cn } from '@/lib/utils';
+import { RESUME_URL } from '@/lib/constants';
 
 function MagneticButton({ children, className, href }: { children: React.ReactNode; className?: string; href: string }) {
     const ref = useRef<HTMLAnchorElement>(null);
@@ -56,7 +57,15 @@ function MagneticButton({ children, className, href }: { children: React.ReactNo
     );
 }
 
+const motionProps = (delay = 0) => ({
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5, delay },
+});
+
 export function Hero() {
+    const reducedMotion = useReducedMotion();
+
     return (
         <section className="relative min-h-screen flex flex-col justify-center items-center text-center overflow-hidden px-4">
 
@@ -70,26 +79,19 @@ export function Hero() {
                         backgroundSize: '40px 40px'
                     }}
                 />
-                {/* Mesh Gradient Blob */}
                 <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-violet-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center gap-6 max-w-4xl">
 
-                {/* Availability Badge */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    {...(reducedMotion ? {} : motionProps(0))}
                 >
                     <LiveBadge />
                 </motion.div>
 
-                {/* Main Heading */}
                 <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
+                    {...(reducedMotion ? {} : motionProps(0.1))}
                     className="text-5xl sm:text-7xl font-bold tracking-tight"
                 >
                     <span className="block text-foreground">Building the future</span>
@@ -98,29 +100,33 @@ export function Hero() {
                     </span>
                 </motion.h1>
 
-                {/* Subtext */}
                 <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    {...(reducedMotion ? {} : motionProps(0.2))}
                     className="text-lg sm:text-xl text-muted-foreground max-w-2xl text-balance"
                 >
                     Full-Stack Developer & CS Student. Crafting premium digital experiences with Next.js, TypeScript, and modern design principles.
                 </motion.p>
 
-                {/* Actions */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="flex flex-col sm:flex-row items-center gap-4 mt-4"
+                    {...(reducedMotion ? {} : motionProps(0.3))}
+                    className="flex flex-col sm:flex-row items-center gap-4 mt-4 flex-wrap justify-center"
                 >
                     <MagneticButton href="#projects" className="bg-primary hover:bg-primary/90">
                         View Work <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </MagneticButton>
 
+                    <a
+                        href={RESUME_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                    >
+                        <FileDown className="w-5 h-5" />
+                        <span>Download CV</span>
+                    </a>
+
                     <Link
-                        href="https://github.com/litt"
+                        href="https://github.com/ClintonOuma"
                         target="_blank"
                         className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
                     >

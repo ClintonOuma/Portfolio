@@ -1,12 +1,13 @@
 'use client';
 
-import { useActionState, useRef, useEffect } from 'react';
+import { useActionState, useRef, useEffect, useState } from 'react';
 import { addEntry } from '@/app/actions/guestbook';
 import { Send, CheckCircle2, AlertCircle, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { GuestbookEntry, GuestbookActionState } from '@/types/guestbook';
 
 const initialState: GuestbookActionState = { success: false, message: '' };
+const COOLDOWN_SECONDS = 60;
 
 /* ------------------------------------------------------------------ */
 /*  Form                                                               */
@@ -15,15 +16,31 @@ const initialState: GuestbookActionState = { success: false, message: '' };
 function GuestbookForm() {
     const [state, formAction, isPending] = useActionState(addEntry, initialState);
     const formRef = useRef<HTMLFormElement>(null);
+    const [cooldown, setCooldown] = useState(0);
 
     useEffect(() => {
         if (state.success) {
             formRef.current?.reset();
+            setCooldown(COOLDOWN_SECONDS);
         }
     }, [state]);
 
+    useEffect(() => {
+        if (cooldown <= 0) return;
+        const t = setInterval(() => setCooldown((c) => (c <= 1 ? 0 : c - 1)), 1000);
+        return () => clearInterval(t);
+    }, [cooldown]);
+
+    const inCooldown = cooldown > 0;
+
     return (
         <form ref={formRef} action={formAction} className="space-y-4">
+            {/* Honeypot: hidden from users, bots fill it */}
+            <div className="absolute -left-[9999px] top-0" aria-hidden>
+                <label htmlFor="website">Website</label>
+                <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                     name="name"
@@ -53,7 +70,8 @@ function GuestbookForm() {
                 name="message"
                 required
                 rows={3}
-                placeholder="Leave a kind message... *"
+                maxLength={500}
+                placeholder="Leave a kind message... (max 500 characters) *"
                 className={cn(
                     'w-full px-4 py-2.5 rounded-xl text-sm resize-none',
                     'bg-white/5 border border-white/10 text-foreground placeholder:text-muted-foreground/60',
@@ -78,7 +96,7 @@ function GuestbookForm() {
 
             <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || inCooldown}
                 className={cn(
                     'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all',
                     'bg-primary text-primary-foreground hover:brightness-110 active:scale-95',
@@ -86,7 +104,7 @@ function GuestbookForm() {
                 )}
             >
                 <Send className="w-4 h-4" />
-                {isPending ? 'Sending…' : 'Sign Guestbook'}
+                {isPending ? 'Sending…' : inCooldown ? `Wait ${cooldown}s` : 'Sign Guestbook'}
             </button>
         </form>
     );
@@ -126,7 +144,9 @@ export function Guestbook({ entries }: { entries: GuestbookEntry[] }) {
 
             {entries.length > 0 ? (
                 <div className="space-y-3 mt-6">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recent entries</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Latest {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
+                    </p>
                     {entries.map((entry) => (
                         <EntryCard key={entry.id} entry={entry} />
                     ))}
