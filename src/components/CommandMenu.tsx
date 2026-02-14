@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { Command } from 'cmdk';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,17 +36,33 @@ export function CommandMenu({
 }) {
     const router = useRouter();
     const isDesktop = useMediaQuery('(min-width: 768px)');
+    const commandRef = useRef<HTMLDivElement>(null);
 
-    // Toggle Logic — Cmd+K
+    // Focus Command input when menu opens (enables arrow key navigation)
+    useEffect(() => {
+        if (open) {
+            const timer = setTimeout(() => {
+                const input = document.querySelector('[cmdk-input]') as HTMLInputElement | null;
+                input?.focus();
+            }, 50);
+            return () => clearTimeout(timer);
+        }
+    }, [open]);
+
+    // Toggle Logic — Cmd+K, Escape to close
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
                 setOpen(!open);
             }
+            if (e.key === 'Escape' && open) {
+                e.preventDefault();
+                setOpen(false);
+            }
         };
-        document.addEventListener('keydown', down);
-        return () => document.removeEventListener('keydown', down);
+        document.addEventListener('keydown', down, true);
+        return () => document.removeEventListener('keydown', down, true);
     }, [setOpen, open]);
 
     // Navigation Helper
@@ -208,6 +224,8 @@ export function CommandMenu({
                             className="fixed inset-0 z-[101] flex items-start justify-center pt-[15vh] pointer-events-none"
                         >
                             <Command
+                                ref={commandRef}
+                                loop
                                 className="w-full max-w-2xl rounded-xl overflow-hidden bg-[#0d0d1a] border border-white/10 shadow-2xl pointer-events-auto"
                                 label="Global Command Menu"
                             >
@@ -229,6 +247,7 @@ export function CommandMenu({
                                 <div className="w-10 h-1 rounded-full bg-white/20" />
                             </div>
                             <Command
+                                loop
                                 className="w-full overflow-hidden bg-[#0d0d1a] border-x border-white/10 shadow-2xl"
                                 label="Global Command Menu"
                             >
