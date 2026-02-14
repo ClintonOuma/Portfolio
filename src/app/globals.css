@@ -4,9 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Fluid smooth scrolling & fixed navbar offset */
 html {
   scroll-behavior: smooth !important;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 80px; /* Navbar height - prevents section headings from hiding under fixed nav */
+}
+
+section[id] {
+  scroll-margin-top: 80px; /* Offset for anchor navigation */
 }
 
 @theme inline {

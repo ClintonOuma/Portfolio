@@ -1,18 +1,21 @@
 'use client';
 
 import { CommandMenu } from '@/components/CommandMenu';
-import { motion } from 'framer-motion';
+import { motion, animate } from 'framer-motion';
 import { Command, Menu, Search, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS } from '@/lib/constants';
+
+const NAVBAR_HEIGHT = 80;
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false); // Mobile Menu
     const [showCmd, setShowCmd] = useState(false); // Command Palette
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('');
+    const intersectingRef = useRef<Map<Element, number>>(new Map());
 
     useEffect(() => {
         const handleScroll = () => {
@@ -22,23 +25,54 @@ export function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    /* Intersection Observer: tracks which section is in view for active link highlight + glow */
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        setActiveSection(entry.target.id);
+                        intersectingRef.current.set(entry.target, entry.intersectionRatio);
+                    } else {
+                        intersectingRef.current.delete(entry.target);
                     }
                 });
+                /* Pick section with highest visibility (most in view) */
+                let best: { id: string; ratio: number } | null = null;
+                intersectingRef.current.forEach((ratio, el) => {
+                    const id = (el as HTMLElement).id;
+                    if (id && (!best || ratio > best.ratio)) {
+                        best = { id, ratio };
+                    }
+                });
+                if (best) setActiveSection(best.id);
             },
-            { threshold: 0.5, rootMargin: '-80px 0px 0px 0px' }
+            { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: `-${NAVBAR_HEIGHT}px 0px -20% 0px` }
         );
 
         const sections = document.querySelectorAll('section[id]');
         sections.forEach((section) => observer.observe(section));
-
         return () => sections.forEach((section) => observer.unobserve(section));
     }, []);
+
+    /* Spring-based smooth scroll for nav links */
+    const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        if (!href.startsWith('#')) return;
+        e.preventDefault();
+        const id = href.slice(1);
+        const el = document.getElementById(id);
+        if (el) {
+            const targetY = el.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
+            const currentY = window.scrollY;
+
+            animate(currentY, targetY, {
+                type: 'spring',
+                stiffness: 80,
+                damping: 20,
+                mass: 0.5,
+                onUpdate: (latest) => window.scrollTo(0, latest),
+            });
+        }
+    };
 
     return (
         <>
@@ -62,36 +96,58 @@ export function Navbar() {
                     <Link
                         href="/"
                         className="text-sm font-semibold tracking-tight text-foreground/90 hover:text-foreground transition-colors"
-                        onClick={() => window.scrollTo(0, 0)}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            animate(window.scrollY, 0, {
+                                type: 'spring',
+                                stiffness: 80,
+                                damping: 20,
+                                mass: 0.5,
+                                onUpdate: (latest) => window.scrollTo(0, latest),
+                            });
+                        }}
                     >
                         Portfolio
                     </Link>
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-6">
-                        {NAV_LINKS.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className={cn(
-                                    "text-sm font-medium transition-colors relative",
-                                    activeSection === link.href.substring(1)
-                                        ? "text-primary"
-                                        : "text-muted-foreground hover:text-primary"
-                                )}
-                            >
-                                {link.name}
-                                {activeSection === link.href.substring(1) && (
-                                    <motion.div
-                                        layoutId="activeNav"
-                                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                    />
-                                )}
-                            </Link>
-                        ))}
+                        {NAV_LINKS.map((link) => {
+                            const sectionId = link.href.slice(1);
+                            const isActive = activeSection === sectionId;
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    onClick={(e) => scrollToSection(e, link.href)}
+                                    className={cn(
+                                        "text-sm font-medium transition-all duration-300 relative py-1 px-2 rounded-md",
+                                        isActive
+                                            ? "text-primary"
+                                            : "text-muted-foreground hover:text-primary"
+                                    )}
+                                    style={
+                                        isActive
+                                            ? {
+                                                  textShadow: '0 0 16px rgb(139 92 246 / 0.5)',
+                                                  boxShadow: 'inset 0 0 12px rgb(139 92 246 / 0.12)',
+                                              }
+                                            : undefined
+                                    }
+                                >
+                                    {link.name}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeNav"
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full shadow-[0_0_8px_rgb(139_92_246_/_0.6)]"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                        />
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -140,8 +196,16 @@ export function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                onClick={() => setIsOpen(false)}
-                                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-lg transition-colors"
+                                onClick={(e) => {
+                                    scrollToSection(e, link.href);
+                                    setIsOpen(false);
+                                }}
+                                className={cn(
+                                    "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
+                                    activeSection === link.href.slice(1)
+                                        ? "text-primary bg-primary/10"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                                )}
                             >
                                 {link.name}
                             </Link>
