@@ -15,7 +15,7 @@ export function EducationCard() {
                     <p className="text-sm text-muted-foreground">Specializing in Software Engineering & Web Technologies</p>
                 </div>
                 <div className="shrink-0 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
-                    <span className="text-xs font-medium text-primary">2022 — 2026</span>
+                    <span className="text-xs font-medium text-primary">2022 — 2025</span>
                 </div>
             </div>
         </BentoCard>
