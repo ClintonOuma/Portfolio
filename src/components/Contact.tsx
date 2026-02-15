@@ -1,6 +1,6 @@
 'use client';
 
-import { Mail, Github, Phone, ArrowUpRight, Copy, Check, Facebook } from 'lucide-react';
+import { Mail, Github, Phone, ArrowUpRight, Copy, Check } from 'lucide-react';
 import { XLogo } from '@/components/icons/XLogo';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -43,14 +43,6 @@ const CONTACT_LINKS = [
         href: 'https://x.com/abclichy',
         icon: XLogo,
         color: 'group-hover:text-sky-400',
-        copyable: false,
-    },
-    {
-        label: 'Facebook',
-        value: 'Clinton Ouma',
-        href: 'https://www.facebook.com/profile.php?id=61576558384983',
-        icon: Facebook,
-        color: 'group-hover:text-blue-400',
         copyable: false,
     },
 ];
