@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "resume:pdf": "cd content && pdflatex -interaction=nonstopmode cv-clinton-ouma.tex && cp cv-clinton-ouma.pdf ../public/resume.pdf && echo 'Done: public/resume.pdf'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",

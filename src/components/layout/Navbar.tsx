@@ -1,14 +1,38 @@
 'use client';
 
 import { CommandMenu } from '@/components/CommandMenu';
-import { motion, animate, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Command, Menu, Search, X, FileDown } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS, RESUME_URL } from '@/lib/constants';
 
 const NAVBAR_HEIGHT = 80;
+
+/** Ease-out cubic: fast start, smooth deceleration at end — professional feel */
+function easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+}
+
+/** Smooth scroll to targetY over durationMs using requestAnimationFrame */
+function smoothScrollTo(targetY: number, durationMs: number) {
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+    let rafId: number;
+
+    function tick(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        const eased = easeOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+        if (progress < 1) rafId = requestAnimationFrame(tick);
+    }
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+}
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -57,25 +81,23 @@ export function Navbar() {
         return () => sections.forEach((section) => observer.unobserve(section));
     }, []);
 
-    /* Spring-based smooth scroll for nav links */
-    const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    /* Smooth scroll for nav links: duration-based, no delay, professional ease */
+    const scrollCancelRef = useRef<(() => void) | null>(null);
+    const scrollToSection = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         if (!href.startsWith('#')) return;
         e.preventDefault();
+        scrollCancelRef.current?.();
         const id = href.slice(1);
         const el = document.getElementById(id);
         if (el) {
             const targetY = el.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
-            const currentY = window.scrollY;
-
-            animate(currentY, targetY, {
-                type: 'spring',
-                stiffness: 80,
-                damping: 20,
-                mass: 0.5,
-                onUpdate: (latest) => window.scrollTo(0, latest),
-            });
+            if (reducedMotion) {
+                window.scrollTo(0, targetY);
+                return;
+            }
+            scrollCancelRef.current = smoothScrollTo(targetY, 650);
         }
-    };
+    }, [reducedMotion]);
 
     return (
         <>
@@ -101,13 +123,12 @@ export function Navbar() {
                         className="text-sm font-semibold tracking-tight text-foreground/90 hover:text-foreground transition-colors"
                         onClick={(e) => {
                             e.preventDefault();
-                            animate(window.scrollY, 0, {
-                                type: 'spring',
-                                stiffness: 80,
-                                damping: 20,
-                                mass: 0.5,
-                                onUpdate: (latest) => window.scrollTo(0, latest),
-                            });
+                            scrollCancelRef.current?.();
+                            if (reducedMotion) {
+                                window.scrollTo(0, 0);
+                                return;
+                            }
+                            scrollCancelRef.current = smoothScrollTo(0, 650);
                         }}
                     >
                         Portfolio
