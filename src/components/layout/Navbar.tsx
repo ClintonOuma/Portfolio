@@ -4,6 +4,7 @@ import { CommandMenu } from '@/components/CommandMenu';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Command, Menu, Search, X, FileDown } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS, RESUME_URL } from '@/lib/constants';
@@ -117,10 +118,10 @@ export function Navbar() {
                 <nav
                     className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"
                 >
-                    {/* Logo / Home */}
+                    {/* Logo / Home — profile photo */}
                     <Link
                         href="/"
-                        className="text-sm font-semibold tracking-tight text-foreground/90 hover:text-foreground transition-colors"
+                        className="flex items-center gap-2 rounded-full ring-2 ring-transparent hover:ring-primary/40 transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
                         onClick={(e) => {
                             e.preventDefault();
                             scrollCancelRef.current?.();
@@ -130,8 +131,16 @@ export function Navbar() {
                             }
                             scrollCancelRef.current = smoothScrollTo(0, 650);
                         }}
+                        aria-label="Home"
                     >
-                        Portfolio
+                        <Image
+                            src="/profile.jpg"
+                            alt="Clinton Ouma"
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover w-10 h-10 border border-white/10"
+                            priority
+                        />
                     </Link>
 
                     {/* Desktop Links */}
