@@ -100,8 +100,8 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 
 function ContactInfo() {
     return (
-        <div className="rounded-2xl p-6 sm:p-8 bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg flex flex-col gap-6 justify-between">
-            <div>
+        <div className="rounded-2xl p-6 sm:p-8 bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg flex flex-col justify-between gap-6 h-full min-h-0">
+            <div className="min-w-0">
                 <h3 className="text-xl font-semibold text-foreground/90 mb-2">Let&apos;s Build Something</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                     I&apos;m a Full-Stack Developer and CS student based in Nairobi. Whether you have a project idea,
@@ -159,13 +159,13 @@ export function ContactSection({ entries }: { entries: GuestbookEntry[] }) {
                     </p>
                 </div>
 
-                {/* Two-Column Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Two-Column Grid — equal-height cards */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
                     {/* Left: Contact Info */}
                     <ContactInfo />
 
-                    {/* Right: Guestbook */}
-                    <div className="rounded-2xl p-6 sm:p-8 bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
+                    {/* Right: Guestbook — same height as contact card */}
+                    <div className="rounded-2xl p-6 sm:p-8 bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg h-full min-h-0 flex flex-col">
                         <Guestbook entries={entries} />
                     </div>
                 </div>

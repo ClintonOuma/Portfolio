@@ -134,7 +134,7 @@ function EntryCard({ entry }: { entry: GuestbookEntry }) {
 
 export function Guestbook({ entries }: { entries: GuestbookEntry[] }) {
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col flex-1 min-h-0 space-y-6">
             <div className="flex items-center gap-2 mb-2">
                 <MessageSquare className="w-5 h-5 text-primary" />
                 <h3 className="text-lg font-semibold text-foreground/90">Guestbook</h3>

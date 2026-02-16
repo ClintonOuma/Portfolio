@@ -16,7 +16,7 @@ async function ContactWrapper() {
     .from('guestbook')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(2);
 
   return <ContactSection entries={(entries as GuestbookEntry[]) ?? []} />;
 }
